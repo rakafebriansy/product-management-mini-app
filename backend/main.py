@@ -28,7 +28,7 @@ def get_product(id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Product not found")
     return product
 
-@app.get('/products', response_model=schemas.ProductResponse, status_code=status.HTTP_201_CREATED)
+@app.post('/products', response_model=schemas.ProductResponse, status_code=status.HTTP_201_CREATED)
 def create_product(product: schemas.ProductCreate, db: Session = Depends(get_db)):
     new_product = models.Product(**product.dict())
     db.add(new_product)

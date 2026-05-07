@@ -13,4 +13,4 @@ class Product(Base):
     category = Column(String, nullable=False)
     isActive = Column(Boolean, default=True)
     createdAt = Column(DateTime, default=datetime.utcnow)
-    updatedAt = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcfromtimestamp)
+    updatedAt = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

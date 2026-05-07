@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import { getProductById, updateProduct, type Product } from '../services/productService';
 
 const ProductEdit = () => {
@@ -65,118 +65,150 @@ const ProductEdit = () => {
     }
   };
 
-  if (loading) return <div className="text-center mt-10">Loading product data...</div>; // Loading state 
+  if (loading) return (
+    <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
+        <div className="w-12 h-12 border-4 border-purple-500/20 border-t-purple-500 rounded-full animate-spin"></div>
+        <p className="text-gray-500 animate-pulse">Loading product details...</p>
+    </div>
+  );
 
   return (
-    <div className="max-w-2xl mx-auto mt-10 p-6 bg-white shadow-md rounded-lg">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">Edit Product</h2>
+    <div className="max-w-2xl mx-auto animate-in">
+      <div className="mb-12">
+        <Link to="/" className="text-xs font-black text-primary uppercase tracking-[0.2em] flex items-center gap-2 mb-4 hover:gap-3 transition-all">
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M15 19l-7-7 7-7" />
+          </svg>
+          Kembali ke Beranda
+        </Link>
+        <h2 className="text-4xl font-black tracking-tighter">Edit Produk</h2>
+        <p className="text-muted-foreground mt-2 font-medium">Ubah informasi produk <span className="text-foreground font-black">"{formData.name}"</span>.</p>
+      </div>
 
-      {error && (
-        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md border border-red-200">
-          {error}
-        </div>
-      )}
+      <div className="premium-card p-8 md:p-10">
+        {error && (
+          <div className="mb-8 p-4 bg-destructive/10 text-destructive rounded-2xl border border-destructive/20 text-xs font-bold uppercase tracking-wider flex items-center gap-3">
+            <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {error}
+          </div>
+        )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Product Name *</label>
-          <input
-            type="text"
-            name="name"
-            required
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 border p-2"
-            value={formData.name}
-            onChange={handleChange}
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Description</label>
-          <textarea
-            name="description"
-            rows={3}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 border p-2"
-            value={formData.description}
-            onChange={handleChange}
-          />
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Price *</label>
+        <form onSubmit={handleSubmit} className="space-y-8">
+          <div className="space-y-3">
+            <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">Nama Produk</label>
             <input
-              type="number"
-              name="price"
-              min="0"
+              type="text"
+              name="name"
+              placeholder="Masukkan nama produk..."
               required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2"
-              value={formData.price}
+              className="input-field h-14 text-base font-medium"
+              value={formData.name}
               onChange={handleChange}
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Stock *</label>
-            <input
-              type="number"
-              name="stock"
-              min="0"
-              required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2"
-              value={formData.stock}
+          <div className="space-y-3">
+            <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">Deskripsi</label>
+            <textarea
+              name="description"
+              rows={4}
+              placeholder="Jelaskan detail singkat tentang produk ini..."
+              className="input-field min-h-[120px] py-4 text-base font-medium resize-none"
+              value={formData.description}
               onChange={handleChange}
             />
           </div>
-        </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Category *</label>
-          <select
-            name="category"
-            required
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2"
-            value={formData.category}
-            onChange={handleChange}
-          >
-            <option value="Electronics">Electronics</option>
-            <option value="Clothes">Clothes</option>
-            <option value="Foods">Foods</option>
-            <option value="Others">Others</option>
-          </select>
-        </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-3">
+              <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">Harga ($)</label>
+              <input
+                type="number"
+                name="price"
+                min="0"
+                step="0.01"
+                required
+                className="input-field h-14 text-base font-medium"
+                value={formData.price}
+                onChange={handleChange}
+              />
+            </div>
 
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            name="isActive"
-            id="isActive"
-            className="h-4 w-4 text-indigo-600 border-gray-300 rounded"
-            checked={formData.isActive}
-            onChange={(e) => setFormData(prev => ({ ...prev, isActive: e.target.checked }))}
-          />
-          <label htmlFor="isActive" className="ml-2 block text-sm text-gray-900">
-            Active Product
-          </label>
-        </div>
+            <div className="space-y-3">
+              <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">Jumlah Stok</label>
+              <input
+                type="number"
+                name="stock"
+                min="0"
+                required
+                className="input-field h-14 text-base font-medium"
+                value={formData.stock}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
 
-        <div className="flex justify-end gap-3 pt-4">
-          <button
-            type="button"
-            onClick={() => navigate('/')}
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            disabled={submitting}
-            className={`px-4 py-2 text-sm font-medium text-white rounded-md 
-              ${submitting ? 'bg-indigo-400' : 'bg-indigo-600 hover:bg-indigo-700'}`}
-          >
-            {submitting ? 'Updating...' : 'Save Update'}
-          </button>
-        </div>
-      </form>
+          <div className="space-y-3">
+            <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">Kategori</label>
+            <div className="relative">
+              <select
+                name="category"
+                required
+                className="input-field h-14 text-base font-medium appearance-none pr-10"
+                value={formData.category}
+                onChange={handleChange}
+              >
+                <option value="Electronics">Elektronik</option>
+                <option value="Clothes">Pakaian</option>
+                <option value="Foods">Makanan</option>
+                <option value="Others">Lainnya</option>
+              </select>
+              <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4 p-5 bg-muted/30 rounded-2xl border border-dashed transition-colors hover:bg-muted/50 group">
+            <div className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                name="isActive"
+                id="isActive"
+                className="sr-only peer"
+                checked={formData.isActive}
+                onChange={(e) => setFormData(prev => ({ ...prev, isActive: e.target.checked }))}
+              />
+              <div className="w-12 h-6 bg-muted-foreground/20 rounded-full peer peer-checked:bg-primary transition-all after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-6"></div>
+            </div>
+            <label htmlFor="isActive" className="text-xs font-black text-muted-foreground uppercase tracking-widest cursor-pointer group-hover:text-foreground transition-colors">
+              Produk Aktif (Tampil di Toko)
+            </label>
+          </div>
+
+          <div className="flex items-center justify-end gap-6 pt-6">
+            <button
+              type="button"
+              onClick={() => navigate('/')}
+              className="text-xs font-black text-muted-foreground uppercase tracking-widest hover:text-foreground transition-colors"
+            >
+              Batal
+            </button>
+            <button
+              type="submit"
+              disabled={submitting}
+              className="btn-primary min-w-[180px] h-14 text-sm uppercase tracking-widest"
+            >
+              {submitting && <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin mr-2"></div>}
+              {submitting ? 'Menyimpan...' : 'Simpan Perubahan'}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
