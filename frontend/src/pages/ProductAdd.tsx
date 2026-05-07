@@ -35,13 +35,13 @@ const ProductAdd = () => {
 
     try {
       if (!formData.name || !formData.category || formData.price < 0) {
-        throw new Error("Please fill all required fields correctly.");
+        throw new Error("Silakan isi semua kolom yang wajib diisi.");
       }
 
       await createProduct(formData);
       navigate('/'); 
     } catch (err: any) {
-      setError(err.response?.data?.detail || err.message || "Failed to add product.");
+      setError(err.response?.data?.detail || err.message || "Gagal menambah produk.");
     } finally {
       setLoading(false);
     }

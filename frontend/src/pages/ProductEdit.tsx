@@ -28,8 +28,8 @@ const ProductEdit = () => {
         }
       } catch (err: any) {
         setError(err.response?.status === 404 
-          ? "Product not found." 
-          : "Failed to load product data.");
+          ? "Produk tidak ditemukan." 
+          : "Gagal memuat data produk.");
       } finally {
         setLoading(false);
       }
@@ -59,7 +59,7 @@ const ProductEdit = () => {
       await updateProduct(id, formData);
       navigate('/');
     } catch (err: any) {
-      setError(err.response?.data?.detail || "Failed to update product."); 
+      setError(err.response?.data?.detail || "Gagal memperbarui produk."); 
     } finally {
       setSubmitting(false);
     }

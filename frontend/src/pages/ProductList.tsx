@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getProducts, type Product } from '../services/productService';
+import { getProducts, deleteProduct, type Product } from '../services/productService';
 
 const ProductList = () => {
     const [products, setProducts] = useState<Product[]>([]);
@@ -13,20 +13,32 @@ const ProductList = () => {
 
     const fetchData = async () => {
         try {
+            setError(null);
             setLoading(true);
             const response = await getProducts();
             setProducts(response.data);
         } catch (e) {
-            setError("Failed to fetch product data. Please check your connection.");
+            setError("Gagal mengambil data produk. Silakan periksa koneksi Anda.");
         } finally {
             setLoading(false);
+        }
+    }
+
+    const handleDelete = async (id: string | number) => {
+        if (!window.confirm("Apakah Anda yakin ingin menghapus produk ini?")) return;
+        
+        try {
+            await deleteProduct(id);
+            setProducts(products.filter(p => p.id !== id));
+        } catch (e) {
+            alert("Gagal menghapus produk. Silakan coba lagi.");
         }
     }
 
     if (loading) return (
         <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
             <div className="w-12 h-12 border-4 border-purple-500/20 border-t-purple-500 rounded-full animate-spin"></div>
-            <p className="text-gray-500 animate-pulse">Loading your products...</p>
+            <p className="text-gray-500 animate-pulse">Memuat produk Anda...</p>
         </div>
     )
 
@@ -37,9 +49,9 @@ const ProductList = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
             </div>
-            <h3 className="text-lg font-semibold text-red-900 dark:text-red-400 mb-2">Error</h3>
+            <h3 className="text-lg font-semibold text-red-900 dark:text-red-400 mb-2">Terjadi Kesalahan</h3>
             <p className="text-red-700 dark:text-red-500 text-sm">{error}</p>
-            <button onClick={fetchData} className="mt-4 text-sm font-medium text-red-600 hover:underline">Try again</button>
+            <button onClick={fetchData} className="mt-4 text-sm font-medium text-red-600 hover:underline">Coba lagi</button>
         </div>
     )
 
@@ -70,16 +82,26 @@ const ProductList = () => {
             ) : (
                 <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8'>
                     {products.map((p) => (
-                        <div key={p.id} className='premium-card p-6 flex flex-col h-full group'>
+                        <div key={p.id} className='premium-card p-6 flex flex-col h-full group relative'>
+                            <button 
+                                onClick={() => p.id && handleDelete(p.id)}
+                                className="absolute top-4 right-4 p-2 text-muted-foreground hover:text-destructive transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"
+                                title="Hapus Produk"
+                            >
+                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
+
                             <div className="flex justify-between items-start mb-6">
                                 <span className={`text-[10px] uppercase tracking-widest font-black px-3 py-1.5 rounded-full ${p.isActive ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400' : 'bg-muted text-muted-foreground'}`}>
                                     {p.isActive ? '• Aktif' : '• Draf'}
                                 </span>
-                                <p className="text-[10px] font-black text-primary/70 uppercase tracking-widest">{p.category}</p>
+                                <p className="text-[10px] font-black text-primary/70 uppercase tracking-widest pr-8">{p.category}</p>
                             </div>
                             
                             <div className="flex-1">
-                                <h3 className='text-xl font-bold group-hover:text-primary transition-colors line-clamp-1'>{p.name}</h3>
+                                <h3 className='text-xl font-bold group-hover:text-primary transition-colors line-clamp-1 pr-8'>{p.name}</h3>
                                 <p className='text-sm text-muted-foreground mt-3 line-clamp-2 leading-relaxed min-h-[2.5rem]'>
                                     {p.description || "Tidak ada deskripsi produk."}
                                 </p>
