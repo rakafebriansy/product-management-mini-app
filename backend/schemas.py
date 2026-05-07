@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 from typing import Optional
 
@@ -14,9 +14,8 @@ class ProductCreate(ProductBase):
     pass
 
 class ProductResponse(ProductBase):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     createdAt: datetime
     updatedAt: datetime
-
-    class Config:
-        from_attributes = True

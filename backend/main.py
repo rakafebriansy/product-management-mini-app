@@ -30,7 +30,7 @@ def get_product(id: int, db: Session = Depends(get_db)):
 
 @app.post('/products', response_model=schemas.ProductResponse, status_code=status.HTTP_201_CREATED)
 def create_product(product: schemas.ProductCreate, db: Session = Depends(get_db)):
-    new_product = models.Product(**product.dict())
+    new_product = models.Product(**product.model_dump())
     db.add(new_product)
     db.commit()
     db.refresh(new_product)
@@ -44,7 +44,7 @@ def update_product(id: int, updated_data: schemas.ProductCreate, db: Session = D
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
     
-    product_query.update(updated_data.dict(), synchronize_session=False)
+    product_query.update(updated_data.model_dump(), synchronize_session=False)
     db.commit()
     return product_query.first()
 
