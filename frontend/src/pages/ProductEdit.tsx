@@ -67,8 +67,8 @@ const ProductEdit = () => {
 
   if (loading) return (
     <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
-        <div className="w-12 h-12 border-4 border-purple-500/20 border-t-purple-500 rounded-full animate-spin"></div>
-        <p className="text-gray-500 animate-pulse">Loading product details...</p>
+        <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+        <p className="text-muted-foreground animate-pulse font-medium">Memuat detail produk...</p>
     </div>
   );
 

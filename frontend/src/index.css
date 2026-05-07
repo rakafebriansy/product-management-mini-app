@@ -54,14 +54,14 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-sans antialiased selection:bg-primary/10 selection:text-primary;
+    @apply bg-background text-foreground font-sans antialiased selection:bg-primary/10 selection:text-primary transition-colors duration-300;
     font-family: 'Outfit', system-ui, sans-serif;
   }
 }
 
 @layer components {
   .glass-nav {
-    @apply sticky top-0 z-50 w-full border-b bg-white/70 dark:bg-black/70 backdrop-blur-xl supports-[backdrop-filter]:bg-white/60;
+    @apply sticky top-0 z-50 w-full border-b bg-white/70 dark:bg-black/70 backdrop-blur-xl supports-[backdrop-filter]:bg-white/60 transition-all duration-300;
   }
 
   .premium-card {
